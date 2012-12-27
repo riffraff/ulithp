@@ -22,12 +22,10 @@ class Lisp
 
   def eval sexpr, ctx=@env
     if @env[:atom].call [sexpr], ctx
-      return ctx[sexpr] if ctx[sexpr]
-      return sexpr
+      return ctx[sexpr] || sexpr
     end
 
-    fn = sexpr[0]
-    args = (sexpr.drop 1)
+    fn, *args = sexpr
     args = args.map { |a| self.eval(a, ctx) } if not [:quote, :if].member? fn
     apply(fn, args, ctx)
   end
